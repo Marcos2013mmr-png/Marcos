@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi San Valentín</title>
+    <style>
+        :root {
+            --pink-bg: #ff4d94;
+            --card-bg: #fdf5e6;
+            --text-color: #5d4037;
+            --accent: #ff1a75;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--pink-bg);
+            background-image: radial-gradient(circle, #ff85b3 10%, transparent 20%), 
+                              radial-gradient(circle, #ff85b3 10%, transparent 20%);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Marca de agua estilo Alex Dev */
+        .watermark {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            width: 90%;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: 50px 50px 50px 5px;
+            box-shadow: 20px 20px 0px rgba(0,0,0,0.1);
+            position: relative;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .badge {
+            display: inline-block;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            width: fit-content;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .badge:hover { transform: scale(1.05); }
+
+        .content {
+            font-size: 1.3rem;
+            color: var(--text-color);
+            line-height: 1.5;
+            z-index: 2;
+            max-width: 65%;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: var(--text-color);
+            margin-left: 5px;
+            vertical-align: middle;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .tree-container {
+            position: absolute;
+            right: 0;
+            bottom: 20px;
+            width: 220px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Botón Sorpresa */
+        #btn-sorpresa {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: none; /* Se muestra al final */
+            transition: 0.3s;
+            z-index: 3;
+        }
+
+        #btn-sorpresa:hover { background-color: #e6005c; transform: scale(1.1); }
+
+        .heart {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 4s linear forwards;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark">Ismael</div>
+
+    <div class="card" onclick="playMusic(san_valentin.mp3)">
+        <div class="badge">❤️ Feliz San Valentin ❤️</div>
+        
+        <div class="content">
+            <span id="typewriter"></span><span class="cursor"></span>
+        </div>
+
+        <button id="btn-sorpresa" onclick="mostrarSorpresa(event)">¡Tengo algo más que decirte! 🎁</button>
+
+        <div class="tree-container">
+        
+            <img src="silueta.png" alt="Árbol de San Valentín" style="width: 100%;">
+        </div>
+    </div>
+
+    <audio id="miMusica" loop>
+        <source src="san_valentin.mp3" type="audio/mpeg">
+        Tu navegador no soporta audio.
+    </audio>
+
+    <script>
+        const textElement = document.getElementById('typewriter');
+        const btn = document.getElementById('btn-sorpresa');
+        const audio = document.getElementById('miMusica');
+        
+        const message = `Para el amor de mi vida:\n\nSi pudiera elegir un lugar seguro, sería a tu lado.\n\nCuanto más tiempo estoy contigo más te amo.\n\n— I Love You! _`;
+        
+        let index = 0;
+
+        function type() {
+            if (index < message.length) {
+                if (message.charAt(index) === '\n') {
+                    textElement.innerHTML += '<br>';
+                } else {
+                    textElement.innerHTML += message.charAt(index);
+                }
+                index++;
+                setTimeout(type, 60);
+            } else {
+                btn.style.display = 'block'; // Mostrar botón al terminar
+            }
+        }
+
+        function playMusic() {
+            audio.play().catch(e => console.log(san_valentin.mp3))
+        }
+
+        function mostrarSorpresa(e) {
+            e.stopPropagation();
+            textElement.innerHTML = "¡Eres lo mejor que me ha pasado! <br><br> 💖 <strong>¿Quieres ser mi San Valentín por siempre?</strong> 💖";
+            btn.style.display = 'none';
+            // Lluvia masiva de corazones
+            for(let i=0; i<30; i++) setTimeout(crearCorazon, i * 100);
+        }
+
+        function crearCorazon() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.top = "100vh";
+            heart.style.fontSize = (Math.random() * 30 + 10) + "px";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 4000);
+        }
+
+        window.onload = () => {
+            type();
+            setInterval(crearCorazon, 500);
+        };
+    </script>
+</body>
+</html>
